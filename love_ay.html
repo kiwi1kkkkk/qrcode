@@ -4,6 +4,8 @@
 <head>
     <title> 爱心代码 </title>
     <meta charset="utf-8">
+    <meta name="Keywords" content="爱心代码，程序员表白">
+    <meta name="Description" content="爱心代码，HTML文件，何书悦GitHub爱心代码项目">
     <link rel="shortcut icon" href="../picture/爱心.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--   https://github.com/heshuyue/love-code   -->
@@ -21,31 +23,39 @@
             width: 100%;
             height: 100%;
         }
-        
-        /* 添加的文字样式 */
-        .heart-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
+
+        .title {
+            width: 20%;
+            height: 30%;
+            /* 文字居中 */
             text-align: center;
-            text-shadow: 0 0 5px #ea80b0;
-            z-index: 10;
-            width: 100%;
+            /* 字体大小 */
+            font-size: 30px;
+            /* 背景颜色 */
+            background-color: transparent;
+            /* 文字颜色 */
+            color: rgba(247, 110, 206, 0.829);
+            /* 左右居中 */
+            margin: auto;
+            /* 定位 */
+            position: relative;
+            /* 上边距 */
+            top: 40%;
+            /* 字体 */
+            font-family: "幼圆";
         }
     </style>
 
 </head>
 
 <body>
+
+
     <canvas id="pinkboard"></canvas>
-    <!-- 添加的文字元素 -->
-    <div class="heart-text">爱你燕姐</div>
-    
+
+    <div class="title">爱你燕姐</div>
     <script>
+
         var settings = {
             particles: {
                 length: 500,
@@ -56,7 +66,9 @@
             },
         };
 
+
         (function () { var b = 0; var c = ["ms", "moz", "webkit", "o"]; for (var a = 0; a < c.length && !window.requestAnimationFrame; ++a) { window.requestAnimationFrame = window[c[a] + "RequestAnimationFrame"]; window.cancelAnimationFrame = window[c[a] + "CancelAnimationFrame"] || window[c[a] + "CancelRequestAnimationFrame"] } if (!window.requestAnimationFrame) { window.requestAnimationFrame = function (h, e) { var d = new Date().getTime(); var f = Math.max(0, 16 - (d - b)); var g = window.setTimeout(function () { h(d + f) }, f); b = d + f; return g } } if (!window.cancelAnimationFrame) { window.cancelAnimationFrame = function (d) { clearTimeout(d) } } }());
+
 
         var Point = (function () {
             function Point(x, y) {
@@ -82,6 +94,7 @@
             };
             return Point;
         })();
+
 
         var Particle = (function () {
             function Particle() {
@@ -117,6 +130,7 @@
             return Particle;
         })();
 
+
         var ParticlePool = (function () {
             var particles,
                 firstActive = 0,
@@ -124,6 +138,7 @@
                 duration = settings.particles.duration;
 
             function ParticlePool(length) {
+                // create and populate particle pool
                 particles = new Array(length);
                 for (var i = 0; i < particles.length; i++)
                     particles[i] = new Particle();
@@ -131,6 +146,7 @@
             ParticlePool.prototype.add = function (x, y, dx, dy) {
                 particles[firstFree].initialize(x, y, dx, dy);
 
+                // handle circular queue
                 firstFree++;
                 if (firstFree == particles.length) firstFree = 0;
                 if (firstActive == firstFree) firstActive++;
@@ -138,6 +154,7 @@
             };
             ParticlePool.prototype.update = function (deltaTime) {
                 var i;
+
 
                 if (firstActive < firstFree) {
                     for (i = firstActive; i < firstFree; i++)
@@ -150,12 +167,16 @@
                         particles[i].update(deltaTime);
                 }
 
+
                 while (particles[firstActive].age >= duration && firstActive != firstFree) {
                     firstActive++;
                     if (firstActive == particles.length) firstActive = 0;
                 }
+
+
             };
             ParticlePool.prototype.draw = function (context, image) {
+
                 if (firstActive < firstFree) {
                     for (i = firstActive; i < firstFree; i++)
                         particles[i].draw(context, image);
@@ -170,11 +191,13 @@
             return ParticlePool;
         })();
 
+
         (function (canvas) {
             var context = canvas.getContext('2d'),
                 particles = new ParticlePool(settings.particles.length),
                 particleRate = settings.particles.length / settings.particles.duration,
                 time;
+
 
             function pointOnHeart(t) {
                 return new Point(
@@ -182,6 +205,7 @@
                     130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
                 );
             }
+
 
             var image = (function () {
                 var canvas = document.createElement('canvas'),
@@ -215,14 +239,19 @@
                 return image;
             })();
 
+
             function render() {
+
                 requestAnimationFrame(render);
+
 
                 var newTime = new Date().getTime() / 1000,
                     deltaTime = newTime - (time || newTime);
                 time = newTime;
 
+
                 context.clearRect(0, 0, canvas.width, canvas.height);
+
 
                 var amount = particleRate * deltaTime;
                 for (var i = 0; i < amount; i++) {
@@ -231,9 +260,11 @@
                     particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
                 }
 
+
                 particles.update(deltaTime);
                 particles.draw(context, image);
             }
+
 
             function onResize() {
                 canvas.width = canvas.clientWidth;
@@ -241,11 +272,16 @@
             }
             window.onresize = onResize;
 
+
             setTimeout(function () {
                 onResize();
                 render();
             }, 10);
         })(document.getElementById('pinkboard'));
     </script>
+
+
+
 </body>
+
 </html>
